@@ -27,20 +27,7 @@ mongoose.Promise = global.Promise;
 
 // ********************* ROUTES *********************
 
-// GET ALL TASKS
-app.get('/tasks', function(req, res){
-	Task.find({}, function(err, tasks){
-		if(err){
-			console.log("ERROR: ", err);
-			res.json({message: "ERROR", error: err});
-		}
-		else{
-			res.json({tasks})
-		}
-	})
-})
-
-// CREATE TASK
+// CREATE A TASK
 app.post("/create", function(req, res){
 	var task = new Task(req.body);
   	task.save(function(err, task){
@@ -54,8 +41,53 @@ app.post("/create", function(req, res){
 	})
 })
 
-// DELETE TASK
-app.delete("/remove/:id", function(req, res){
+// RETRIEVE ALL TASKS
+app.get('/tasks', function(req, res){
+	Task.find({}, function(err, tasks){
+		if(err){
+			console.log("ERROR: ", err);
+			res.json({message: "ERROR", error: err});
+		}
+		else{
+			res.json({tasks})
+		}
+	})
+})
+
+// RETRIEVE A TASK BY ID
+app.get("/retrieve/:id", function(req, res){
+	Task.find({_id: req.params.id}, function(err, task){
+		if(err){
+			console.log("ERROR: ", err);
+			res.json({message: "ERROR", error: err});
+		}
+		else{
+			res.json({task});
+		}
+	})
+})
+
+// UPDATE A TASK BY ID
+app.put("/update/:id", function(req, res){
+	updated_task = {};
+	if (req.body){
+		updated_task = req.body;
+	}
+	Task.update({_id: req.params.id}, updated_task, function(err){
+		if(err){
+			console.log("ERROR: ", err);
+			res.json({message: "ERROR", error: err});
+		}
+		else{
+			res.json({message: "Success"})
+		}
+	});
+})
+
+
+
+// DELETE A TASK BY ID
+app.delete("/delete/:id", function(req, res){
 	Task.remove({_id: req.params.id}, function(err){
 		if(err){
 			console.log("ERROR: ", err);
@@ -67,18 +99,7 @@ app.delete("/remove/:id", function(req, res){
 	});
 })
 
-// SHOW TASK
-app.get("/show/:id", function(req, res){
-	Task.find({_id: req.params.id}, function(err, task){
-		if(err){
-			console.log("ERROR: ", err);
-			res.json({message: "ERROR", error: err});
-		}
-		else{
-			res.json({task: task});
-		}
-	})
-})
+
 
 var server = app.listen(8000, function(){
 	console.log("listening on port 8000");
