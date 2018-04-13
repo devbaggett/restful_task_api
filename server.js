@@ -6,9 +6,10 @@ var moment = require("moment");
 
 var app = express();
 
-app.use(bodyParser.urlencoded({extended: true}));
-// configure body-parser
+app.use(bodyParser.urlencoded({extended: true})); // don't need this for Angular
 app.use(bodyParser.json());
+app.use(express.static(__dirname + '/AngularApp/dist'));
+console.log(__dirname + '/AngularApp/dist');
 
 mongoose.connect("mongodb://localhost/task_api");
 
@@ -83,8 +84,6 @@ app.put("/update/:id", function(req, res){
 		}
 	});
 })
-
-
 
 // DELETE A TASK BY ID
 app.delete("/delete/:id", function(req, res){
